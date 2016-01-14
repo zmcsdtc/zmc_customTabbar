@@ -13,6 +13,7 @@
 #define kWindowHeigth [UIScreen mainScreen].bounds.size.height
 #define kNaviGationBarHeight 64
 #define kTabBarHeight 49
+#define angle2Radian(angle) ((angle) / 180.0 * M_PI)
 @implementation CustomTabbar
 -(instancetype)initWithTitles:(NSArray*)titles images:(NSArray*)images selectedImages:(NSArray*)selectedImgaes tabBarStyle:(CustomTabbarStyle)tabBarStyle norTextColor:(UIColor*)norTextColor selectedTextColor:(UIColor*)selectedTextColor bgColor:(UIColor*)bgColor selectedColor:(UIColor*)selectedColor;{
     if (self=[super init]) {
@@ -71,8 +72,10 @@
         btn.selected=YES;
         _lastBtn.selected=NO;
         _lastBtn=btn;
+        [self addCAkeyAnimation];
     }
 }
+
 //设置背景色
 - (void) setBgColor:(UIColor *)bgColor{
     self.backgroundColor=bgColor;
@@ -83,5 +86,20 @@
         btn.titleLabel.font=tabBarFont;
     }
 }
+#pragma mark-点击tabbar抖动动画
+- (void) addCAkeyAnimation{
+    CAKeyframeAnimation  *keyAnima = [CAKeyframeAnimation animation];
+    keyAnima.keyPath = @"transform.rotation";
+    // 度数 / 180 * M_PI
+    keyAnima.values = @[@(-angle2Radian(4)),@(angle2Radian(0)),@(angle2Radian(4)),@(angle2Radian(0))];
+    keyAnima.removedOnCompletion = NO;
+    keyAnima.fillMode = kCAFillModeForwards;
+    keyAnima.duration = 0.2;
+    
+    // 设置动画重复的次数
+    keyAnima.repeatCount = 0;
+    // 2.添加核心动画
+    [_lastBtn.layer addAnimation:keyAnima forKey:nil];
 
+}
 @end
